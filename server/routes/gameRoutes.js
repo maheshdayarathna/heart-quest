@@ -1,13 +1,14 @@
-// gameRoutes.js — Game route definitions
-// TODO: POST /start       — call gameController.startGame (protected)
-// TODO: POST /submit-score — call gameController.submitScore (protected)
-// TODO: GET  /data         — call gameController.getGameData (protected)
+// routes/gameRoutes.js — Game route definitions
+// ────────────────────────────────────────────────
+// Maps HTTP verbs + paths to controller functions.
+// This file contains ZERO logic — only wiring. (Low Coupling)
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-// const gameController = require('../controllers/gameController');
-// const authMiddleware = require('../middleware/authMiddleware');
+const { saveScore } = require("../controllers/gameController");
+const { protect } = require("../middleware/authMiddleware");
 
-// TODO: Define routes here
+// Protected routes (require valid JWT)
+router.post("/save-score", protect, saveScore);
 
 module.exports = router;

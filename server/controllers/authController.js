@@ -124,4 +124,68 @@ const getProfile = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, getProfile };
+// ─────────────────────────────────────────────────────────
+// PUT /api/auth/profile   (protected)
+// ─────────────────────────────────────────────────────────
+const updateProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+
+      res.status(200).json({
+        success: true,
+        data: {
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          highestScore: updatedUser.highestScore,
+          token: generateToken(updatedUser._id),
+        },
+      });
+    } else {
+      res.status(404);
+      next(new Error("User not found"));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────
+// DELETE /api/auth/profile   (protected)
+// ─────────────────────────────────────────────────────────
+const deleteAccount = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      // Cascading delete: Remove associated scores first
+      const Score = require("../models/Score");
+      await Score.deleteMany({ userId: user._id });
+
+      // Remove the user
+      await User.findByIdAndDelete(user._id);
+
+      res.status(200).json({
+        success: true,
+        message: "User and associated data removed",
+      });
+    } else {
+      res.status(404);
+      next(new Error("User not found"));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, getProfile, updateProfile, deleteAccount };
