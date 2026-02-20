@@ -1,0 +1,3 @@
+// middleware/ — Express middleware functions
+// Example: authMiddleware.js (JWT verification), errorHandler.js
+// Middleware is decoupled from route logic — pluggable and reusable (Low Coupling)

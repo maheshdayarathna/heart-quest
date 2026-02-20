@@ -1,0 +1,3 @@
+// controllers/ — Route handler logic
+// Example: authController.js, gameController.js, leaderboardController.js
+// Controllers handle request/response — delegate business logic to services (Low Coupling)

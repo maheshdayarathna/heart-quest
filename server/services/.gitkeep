@@ -1,0 +1,3 @@
+// services/ — Business logic and third-party API integrations
+// Example: triviaService.js (external trivia API), scoreService.js
+// Services encapsulate complex logic — controllers stay thin (High Cohesion)
