@@ -1,12 +1,4 @@
 // server.js — Express application entry point
-// ─────────────────────────────────────────────
-// Responsibilities (and nothing more):
-//   1. Load environment variables
-//   2. Connect to MongoDB
-//   3. Register global middleware
-//   4. Mount route groups
-//   5. Attach error-handling middleware
-//   6. Start the HTTP server
 
 const express = require("express");
 const cors = require("cors");
@@ -14,26 +6,23 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
-// ── 1. Environment ──────────────────────────
+// Load environment variables
 dotenv.config();
 
-// ── 2. Database ─────────────────────────────
+// Connect to MongoDB
 connectDB();
 
-// ── 3. App & Global Middleware ──────────────
+// Create Express app
 const app = express();
 
-// Enable CORS for all origins (tighten in production)
+// Enable CORS
 app.use(cors());
 
-// Parse incoming JSON bodies
+// Body parsers
 app.use(express.json());
-
-// Parse URL-encoded bodies (form submissions)
 app.use(express.urlencoded({ extended: true }));
 
-// ── 4. Routes ───────────────────────────────
-// Health-check / smoke-test route
+// Health check route
 app.get("/api/test", (req, res) => {
   res.json({
     success: true,
@@ -42,26 +31,21 @@ app.get("/api/test", (req, res) => {
   });
 });
 
-// Auth routes   — register, login, profile
+// Routes
 app.use("/api/auth", require("./routes/authRoutes"));
-
-// Game routes   — start game, submit score, get game data
 app.use("/api/game", require("./routes/gameRoutes"));
-
-// Leaderboard   — rankings & user rank
 app.use("/api/leaderboard", require("./routes/leaderboardRoutes"));
 
-// ── 5. Error Handling ───────────────────────
-// Catch 404s for any route that wasn't matched above
+// Error handling middleware
 app.use(notFound);
-
-// Final error handler — sends JSON error response
 app.use(errorHandler);
 
-// ── 6. Start Server ────────────────────────
+// Server start
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+
+app.listen(PORT, "0.0.0.0", () => {
   console.log(
     `Server running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}`
   );
+  console.log("Server accessible on network");
 });

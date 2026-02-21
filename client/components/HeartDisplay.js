@@ -1,20 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function HeartDisplay() {
+export default function HeartDisplay({ hearts = 3, maxHearts = 3 }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Heart Display</Text>
+      {Array.from({ length: maxHearts }).map((_, index) => (
+        <Text key={index} style={styles.heart}>
+          {index < hearts ? '❤️' : '🖤'}
+        </Text>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    padding: 10,
+    flexDirection: 'row',
+    gap: 6,
   },
-  text: {
-    fontSize: 16,
+  heart: {
+    fontSize: 22,
   },
 });
